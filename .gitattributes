@@ -1,0 +1,8 @@
+# Export ignores
+.gitattributes export-ignore
+.gitignore export-ignore
+LICENSE export-ignore
+README.md export-ignore
+
+# Auto detect text files and reset eol
+* text=auto !eol
