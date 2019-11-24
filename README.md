@@ -3,6 +3,7 @@
 Originally coded by Jason Ross aka JasonFriday13 on the forums.
 
 Copyright (C) 2014-2016, 2018  MouseHelmet Software
+
 Copyright (C) 2019             Gilbertsoft LLC
 
 ## Introduction
