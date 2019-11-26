@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-x86-ansi.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-x86-ansi.lib shlwapi.lib"
 				LinkIncremental="0"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-x86-ansi.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-x86-ansi.lib shlwapi.lib"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -215,7 +215,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-x86-unicode.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-x86-unicode.lib shlwapi.lib"
 				LinkIncremental="0"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -290,7 +290,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-x86-unicode.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-x86-unicode.lib shlwapi.lib"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -369,7 +369,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-x86-ansi.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-amd64-ansi.lib shlwapi.lib"
 				LinkIncremental="0"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -445,7 +445,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-x86-ansi.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-amd64-ansi.lib shlwapi.lib"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -524,7 +524,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-amd64-unicode.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-amd64-unicode.lib shlwapi.lib"
 				LinkIncremental="0"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
@@ -600,7 +600,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="nsis/pluginapi-amd64-unicode.lib shlwapi.lib"
+				AdditionalDependencies="Src/nsis/pluginapi-amd64-unicode.lib shlwapi.lib"
 				LinkIncremental="1"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="true"
