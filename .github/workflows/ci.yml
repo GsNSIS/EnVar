@@ -39,8 +39,8 @@ jobs:
         run: |
           echo "Copy source files to Contrib"
           mkdir "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
-          xcopy "%GITHUB_WORKSPACE%\Src" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\Src" /E
-          xcopy "%GITHUB_WORKSPACE%\EnVar.*" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
+          xcopy "%GITHUB_WORKSPACE%\Src" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\" /E
+          xcopy "%GITHUB_WORKSPACE%\EnVar.*" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\"
           echo "Copy doc files to Docs"
           mkdir "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
           copy "%GITHUB_WORKSPACE%\LICENSE" "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
