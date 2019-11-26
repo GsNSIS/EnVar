@@ -27,6 +27,7 @@ jobs:
     # use msbuild to build the solution
     - name: Build Dll's
       run: |
+        Get-Variable | Write-Output
         echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe %GITHUB_WORKSPACE%\EnVar.sln"
         echo "${ProgramFiles(x86)}\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe ${GITHUB_WORKSPACE}\EnVar.sln"
         "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln
@@ -34,7 +35,6 @@ jobs:
     - name: Create Distribution
       if: success()
       run: |
-        Get-Variable | Write-Output
         echo "Copy source files to Contrib"
         mkdir "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
         xcopy "%GITHUB_WORKSPACE%\Src" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\Src" /E
