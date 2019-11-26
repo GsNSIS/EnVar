@@ -2,9 +2,10 @@
 
 Originally coded by Jason Ross aka JasonFriday13 on the forums.
 
-Copyright (C) 2014-2016, 2018  MouseHelmet Software
+* Copyright (C) 2014-2016, 2018  MouseHelmet Software
+* Copyright (C) 2019             Gilbertsoft LLC
 
-Copyright (C) 2019             Gilbertsoft LLC
+The original code was downloaded from the [NSIS Wiki](https://nsis.sourceforge.io/EnVar_plug-in).
 
 ## Introduction
 
