@@ -34,6 +34,7 @@ jobs:
     - name: Create Distribution
       if: success()
       run: |
+        Get-Variable | Write-Output
         echo "Copy source files to Contrib"
         mkdir "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
         xcopy "%GITHUB_WORKSPACE%\Src" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\Src" /E
