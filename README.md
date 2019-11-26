@@ -1,4 +1,4 @@
-# EnVar plugin for NSIS
+# EnVar Plugin for NSIS
 
 Originally coded by Jason Ross aka JasonFriday13 on the forums.
 
@@ -15,12 +15,62 @@ removing paths from variables, removing variables from the environment, and
 updating the installer enviroment from the registry. This plugin is provided
 with 32bit ansi and unicode versions, as well as a 64bit unicode version.
 
-## Documentation
+## Functions
 
-For more information visit the following folders:
+There are eight functions in this plugin. Returns an error code on the
+stack (unless noted otherwise), see below for the codes.
 
-* [Docs/EnVar](https://github.com/GsNSIS/EnVar/blob/master/Docs/EnVar/readme.txt)
-* [Examples/EnVar](https://github.com/GsNSIS/EnVar/blob/master/Examples/EnVar/example.nsi)
+ERR_SUCCESS     0   Function completed successfully.
+ERR_NOREAD      1   Function couldn't read from the environment.
+ERR_NOVARIABLE  2   Variable doesn't exist in the current environment.
+ERR_NOVALUE     3   Value doesn't exist in the Variable.
+ERR_NOWRITE     4   Function can't write to the current environment.
+
+EnVar::SetHKCU
+EnVar::SetHKLM
+
+  SetHKCU sets the environment access to the current user. This is the default.
+  SetHKLM sets the environment access to the local machine.
+  These functions do not return a value on the stack.
+
+EnVar::Check         VariableName Path
+
+  Checks for a Path in the specified VariableName. Passing "null" as a Path makes
+  it check for the existance of VariableName. Passing "null" for both makes it
+  check for write access to the current environment.
+
+EnVar::AddValue      VariableName Path
+EnVar::AddValueEx    VariableName Path
+
+  Adds a Path to the specified VariableName. Does does not modify existing
+  variables if they are not the right type. AddValueEx is for expandable paths,
+  ie %tempdir%. Both functions respect expandable variables, so if the variable
+  already exists, they try to leave it intact. AddValueEx converts the variable
+  to its expandable version. If the path already exists, it returns a success
+  error code.
+
+EnVar::DeleteValue   VariableName Path
+
+  Deletes a path from a variable if it's the right type. The delete is also
+  recursive, so if it finds multiple paths, all of them are deleted as well.
+
+EnVar::Delete        VariableName
+
+  Deletes a variable from the environment. Note that "path" cannot be deleted.
+  Also, variables that aren't the right type are not deleted.
+
+EnVar::Update        RegRoot VariableName
+
+  Updates the installer environment by reading VariableName from the registry
+  and can use RegRoot to specify from which root it reads from: HKCU for the
+  current user, and HKLM for the local machine. Anything else (including an
+  empty string) for RegRoot means it reads from both roots, appends the paths
+  together, and updates the installer environment. This function is not affected
+  by EnVar::SetHKCU and EnVar::SetHKLM, and does not write to the registry.
+
+## Examples
+
+For a example NSIS script visit [Examples/EnVar](https://github.com/GsNSIS/EnVar/blob/master/Examples/EnVar/example.nsi).
 
 ## License
 
