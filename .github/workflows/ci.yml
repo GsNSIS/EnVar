@@ -27,8 +27,8 @@ jobs:
     # use msbuild to build the solution
     - name: Build Dll's
       run: |
-        echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe %GITHUB_WORKSPACE%\EnVar.sln"
-        "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln
+        echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe EnVar.sln"
+        "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" EnVar.sln
     # Prepare distribution folder
     - name: Create Distribution
       if: success()
