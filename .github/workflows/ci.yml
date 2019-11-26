@@ -27,27 +27,27 @@ jobs:
     # use msbuild to build the solution
     - name: Build Dll's
       run: |
-        echo "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe EnVar.sln"
-        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" EnVar.sln
+        echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe EnVar.sln"
+        "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" EnVar.sln
     # Prepare distribution folder
     - name: Create Distribution
       if: success()
       run: |
         echo "Copy source files to Contrib"
-        mkdir Dist\Contrib\EnVar"
-        xcopy Src" Dist\Contrib\EnVar\Src" /E
-        xcopy EnVar.*" Dist\Contrib\EnVar"
+        mkdir "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
+        xcopy "%GITHUB_WORKSPACE%\Src" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\Src" /E
+        xcopy "%GITHUB_WORKSPACE%\EnVar.*" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
         echo "Copy doc files to Docs"
-        mkdir Dist\Docs\EnVar"
-        copy LICENSE" Dist\Docs\EnVar"
-        copy README.md" Dist\Docs\EnVar"
+        mkdir "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
+        copy "%GITHUB_WORKSPACE%\LICENSE" "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
+        copy "%GITHUB_WORKSPACE%\README.md" "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
         echo "Copy dll's to Plugins"
-        mkdir Dist\Plugins\amd64-unicode"
-        copy Lib\x64\Release Unicode\EnVar.dll" Dist\Plugins\amd64-unicode"
-        mkdir Dist\Plugins\x86-ansi"
-        copy Lib\Win32\Release\EnVar.dll" Dist\Plugins\x86-ansi"
-        mkdir Dist\Plugins\x86-unicode"
-        copy Lib\Win32\Release Unicode\EnVar.dll" Dist\Plugins\x86-unicode"
+        mkdir "%GITHUB_WORKSPACE%\Dist\Plugins\amd64-unicode"
+        copy "%GITHUB_WORKSPACE%\Lib\x64\Release Unicode\EnVar.dll" "%GITHUB_WORKSPACE%\Dist\Plugins\amd64-unicode"
+        mkdir "%GITHUB_WORKSPACE%\Dist\Plugins\x86-ansi"
+        copy "%GITHUB_WORKSPACE%\Lib\Win32\Release\EnVar.dll" "%GITHUB_WORKSPACE%\Dist\Plugins\x86-ansi"
+        mkdir "%GITHUB_WORKSPACE%\Dist\Plugins\x86-unicode"
+        copy "%GITHUB_WORKSPACE%\Lib\Win32\Release Unicode\EnVar.dll" "%GITHUB_WORKSPACE%\Dist\Plugins\x86-unicode"
     # Publish Distribution Artifact
     - name: Publish Distribution Artifact
       if: success()
