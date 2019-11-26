@@ -23,4 +23,4 @@ For more information visit the following folders:
 
 ## License
 
-This project is released under the terms of the [GNU General Public License](LICENSE)
+This project is released under the terms of the [zlib License](LICENSE)
