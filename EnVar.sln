@@ -9,11 +9,9 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Unicode|x64 = Debug Unicode|x64
 		Debug Unicode|x86 = Debug Unicode|x86
-		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release Unicode|x64 = Release Unicode|x64
 		Release Unicode|x86 = Release Unicode|x86
-		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -21,16 +19,12 @@ Global
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug Unicode|x64.Build.0 = Debug Unicode|x64
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug Unicode|x86.ActiveCfg = Debug Unicode|Win32
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug Unicode|x86.Build.0 = Debug Unicode|Win32
-		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug|x64.ActiveCfg = Debug|x64
-		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug|x64.Build.0 = Debug|x64
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug|x86.ActiveCfg = Debug|Win32
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Debug|x86.Build.0 = Debug|Win32
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release Unicode|x64.ActiveCfg = Release Unicode|x64
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release Unicode|x64.Build.0 = Release Unicode|x64
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release Unicode|x86.ActiveCfg = Release Unicode|Win32
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release Unicode|x86.Build.0 = Release Unicode|Win32
-		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release|x64.ActiveCfg = Release|x64
-		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release|x64.Build.0 = Release|x64
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release|x86.ActiveCfg = Release|Win32
 		{BA0F65F4-BA26-4236-8A77-93B53AE9EF6F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
