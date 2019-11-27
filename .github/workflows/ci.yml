@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: build-${{ github.sha }}
-          path: ${{ env.GITHUB_WORKSPACE }}\Lib
+          path: Lib
           # name: ${{ matrix.configuration }}-${{ matrix.platform }}
           # path: ${{ GITHUB_WORKSPACE }}\Lib\${{ matrix.platform }}\${{ matrix.configuration }}
   post-build:
@@ -64,7 +64,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: build-${{ github.sha }}
-          path: ${{ env.GITHUB_WORKSPACE }}\Lib
+          path: Lib
       # Prepare distribution folder
       - name: Create Distribution
         if: success()
