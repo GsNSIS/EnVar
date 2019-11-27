@@ -1,5 +1,7 @@
 Write-Output "Cleanup distribution..."
-Remove-Item -Path "$PSScriptRoot\..\Dist" -Force -Recurse
+if (Test-Path -Path "$PSScriptRoot\..\Dist") {
+    Remove-Item -Path "$PSScriptRoot\..\Dist" -Force -Recurse
+}
 
 Write-Output "Copy source files..."
 New-Item -ItemType "directory" -Path "$PSScriptRoot\..\Dist\Contrib\EnVar" | Out-Null
