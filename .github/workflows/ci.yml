@@ -38,7 +38,7 @@ jobs:
             platform: x64
       fail-fast: true
     runs-on: windows-latest
-    needs: checkout
+    needs: pre-build
     steps:
       # use msbuild to build the solution
       - name: Building ${{ matrix.configuration }} on ${{ matrix.platform }}
