@@ -40,7 +40,7 @@ jobs:
         run: |
           rem Get-Variable | Write-Output
           rem set
-          rem echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe %GITHUB_WORKSPACE%\EnVar.sln"
+          echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln /p:Configuration="${{ matrix.configuration }}";Platform=${{ matrix.platform }}
           "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln /p:Configuration="${{ matrix.configuration }}";Platform=${{ matrix.platform }}
         shell: cmd
       # upload artifact
