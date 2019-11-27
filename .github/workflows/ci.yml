@@ -18,21 +18,41 @@ on:
     - 'Src/**.h'
     - 'Src/**.lib'
 jobs:
-  build:
+  pre-build:
+    name: Pre Build
     runs-on: windows-latest
     steps:
       # checkout code from repo
       - name: Checkout
         uses: actions/checkout@v1
+  build:
+    name: Build Dll's
+    strategy:
+      matrix:
+        configuration: [Debug, Debug Unicode, Release, Release Unicode]
+        platform: [x86, x64]    
+        exclude:
+          - configuration: Debug
+            platform: x64
+          - configuration: Release
+            platform: x64
+      fail-fast: true
+    runs-on: windows-latest
+    needs: checkout
+    steps:
       # use msbuild to build the solution
-      - name: Build Dll's
+      - name: Building ${{ matrix.configuration }} on ${{ matrix.platform }}
         run: |
           rem Get-Variable | Write-Output
-          set
-          echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe %GITHUB_WORKSPACE%\EnVar.sln"
-          echo "${ProgramFiles(x86)}\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe ${GITHUB_WORKSPACE}\EnVar.sln"
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln
+          rem set
+          rem echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe %GITHUB_WORKSPACE%\EnVar.sln"
+          "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln /p:Configuration=${{ matrix.configuration }};Platform=${{ matrix.platform }}
         shell: cmd
+  post-build:
+    name: Post Build
+    runs-on: windows-latest
+    needs: build
+    steps:
       # Prepare distribution folder
       - name: Create Distribution
         if: success()
