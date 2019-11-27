@@ -18,18 +18,11 @@ on:
     - 'Src/**.h'
     - 'Src/**.lib'
 jobs:
-  pre-build:
-    name: Pre Build
-    runs-on: windows-latest
-    steps:
-      # checkout code from repo
-      - name: Checkout
-        uses: actions/checkout@v1
   build:
     name: Build Dll's
     strategy:
       matrix:
-        configuration: [Debug, Debug Unicode, Release, Release Unicode]
+        configuration: [Release, Release Unicode]
         platform: [x86, x64]    
         exclude:
           - configuration: Debug
@@ -38,8 +31,10 @@ jobs:
             platform: x64
       fail-fast: true
     runs-on: windows-latest
-    needs: pre-build
     steps:
+      # checkout code from repo
+      - name: Checkout
+        uses: actions/checkout@v1
       # use msbuild to build the solution
       - name: Building ${{ matrix.configuration }} on ${{ matrix.platform }}
         run: |
@@ -48,11 +43,28 @@ jobs:
           rem echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\bin\MSBuild.exe %GITHUB_WORKSPACE%\EnVar.sln"
           "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln /p:Configuration="${{ matrix.configuration }}";Platform=${{ matrix.platform }}
         shell: cmd
+      # upload artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: build-${{ github.sha }}
+          path: ${{ GITHUB_WORKSPACE }}\Lib
+          # name: ${{ matrix.configuration }}-${{ matrix.platform }}
+          # path: ${{ GITHUB_WORKSPACE }}\Lib\${{ matrix.platform }}\${{ matrix.configuration }}
   post-build:
     name: Post Build
     runs-on: windows-latest
     needs: build
     steps:
+      # checkout code from repo
+      - name: Checkout
+        uses: actions/checkout@v1
+      # download artifact
+      - name: Download artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: build-${{ github.sha }}
+          path: ${{ GITHUB_WORKSPACE }}\Lib
       # Prepare distribution folder
       - name: Create Distribution
         if: success()
@@ -78,12 +90,5 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v1
         with:
-          name: EnVar-plugin-${{ github.ref }}
+          name: EnVar-plugin-${{ github.sha }}
           path: Dist
-      # Publish Library Artifact
-      - name: Publish Library Artifact
-        if: success()
-        uses: actions/upload-artifact@v1
-        with:
-          name: lib-${{ github.ref }}
-          path: Lib
