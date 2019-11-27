@@ -68,23 +68,8 @@ jobs:
       # Prepare distribution folder
       - name: Create Distribution
         if: success()
-        run: |
-          echo "Copy source files to Contrib"
-          mkdir "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar"
-          xcopy "%GITHUB_WORKSPACE%\Src" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\" /E
-          xcopy "%GITHUB_WORKSPACE%\EnVar.*" "%GITHUB_WORKSPACE%\Dist\Contrib\EnVar\"
-          echo "Copy doc files to Docs"
-          mkdir "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
-          copy "%GITHUB_WORKSPACE%\LICENSE" "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
-          copy "%GITHUB_WORKSPACE%\README.md" "%GITHUB_WORKSPACE%\Dist\Docs\EnVar"
-          echo "Copy dll's to Plugins"
-          mkdir "%GITHUB_WORKSPACE%\Dist\Plugins\amd64-unicode"
-          copy "%GITHUB_WORKSPACE%\Lib\x64\Release Unicode\EnVar.dll" "%GITHUB_WORKSPACE%\Dist\Plugins\amd64-unicode"
-          mkdir "%GITHUB_WORKSPACE%\Dist\Plugins\x86-ansi"
-          copy "%GITHUB_WORKSPACE%\Lib\Win32\Release\EnVar.dll" "%GITHUB_WORKSPACE%\Dist\Plugins\x86-ansi"
-          mkdir "%GITHUB_WORKSPACE%\Dist\Plugins\x86-unicode"
-          copy "%GITHUB_WORKSPACE%\Lib\Win32\Release Unicode\EnVar.dll" "%GITHUB_WORKSPACE%\Dist\Plugins\x86-unicode"
-        shell: cmd
+        run: "${env:GITHUB_WORKSPACE}\Bin\make-dist.ps1"
+        shell: pwsh
       # Publish Distribution Artifact
       - name: Publish Distribution Artifact
         if: success()
