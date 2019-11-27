@@ -21,7 +21,8 @@
 x64/
 x86/
 bld/
-[Bb]in/
+[Bb]in/*
+![Bb]in/make-dist.ps1
 [Oo]bj/
 [Ll]ib/
 [Ll]og/
