@@ -68,7 +68,7 @@ jobs:
       # Prepare distribution folder
       - name: Create Distribution
         if: success()
-        run: "${env:GITHUB_WORKSPACE}\Bin\make-dist.ps1"
+        run: ${env:GITHUB_WORKSPACE}\Bin\make-dist.ps1
         shell: pwsh
       # Publish Distribution Artifact
       - name: Publish Distribution Artifact
