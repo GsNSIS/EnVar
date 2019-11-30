@@ -46,8 +46,13 @@ jobs:
       - name: Create Distribution
         run: Bin\Build.ps1 New-Distribution, Compress-Distribution
       # Publish Distribution Artifact
-      - name: Publish Distribution Artifact
+      - name: Publish Dist Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: EnVar-Plugin-${{ github.sha }}
+          name: Dist-${{ github.sha }}
+          path: Dist
+      - name: Publish Data Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Data-${{ github.sha }}
           path: Data
