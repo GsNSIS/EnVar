@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v1
       # use msbuild to build the solution
       - name: Build Plugin
-        run: Bin\Build New-Build
+        run: Bin\Build.ps1 New-Build
         shell: cmd
       # upload artifacts
       - name: Publish Lib Artifact
@@ -42,7 +42,7 @@ jobs:
           path: Obj
       # Prepare distribution folder
       - name: Create Distribution
-        run: Bin\Build New-Distribution, Compress-Distribution
+        run: Bin\Build.ps1 New-Distribution, Compress-Distribution
       # Publish Distribution Artifact
       - name: Publish Distribution Artifact
         uses: actions/upload-artifact@v1
