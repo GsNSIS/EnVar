@@ -25,10 +25,12 @@ jobs:
       # checkout code from repo
       - name: Checkout
         uses: actions/checkout@v1
+      # Install Modules
+      - name: Setup Build Script
+        run: Install-Module "Invoke-MsBuild" -Force
       # use msbuild to build the solution
       - name: Build Plugin
         run: Bin\Build.ps1 New-Build
-        shell: cmd
       # upload artifacts
       - name: Publish Lib Artifact
         uses: actions/upload-artifact@v1
