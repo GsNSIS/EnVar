@@ -20,60 +20,32 @@ on:
 jobs:
   build:
     name: Build Dll's
-    strategy:
-      matrix:
-        configuration: [Release, Release Unicode]
-        platform: [x86, x64]    
-        exclude:
-          - configuration: Debug
-            platform: x64
-          - configuration: Release
-            platform: x64
-      fail-fast: true
     runs-on: windows-latest
     steps:
       # checkout code from repo
       - name: Checkout
         uses: actions/checkout@v1
       # use msbuild to build the solution
-      - name: Building ${{ matrix.configuration }} on ${{ matrix.platform }}
-        run: |
-          rem Get-Variable | Write-Output
-          rem set
-          echo "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln /p:Configuration="${{ matrix.configuration }}";Platform=${{ matrix.platform }}
-          "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" %GITHUB_WORKSPACE%\EnVar.sln /p:Configuration="${{ matrix.configuration }}";Platform=${{ matrix.platform }}
+      - name: Build Plugin
+        run: Bin\Build New-Build
         shell: cmd
-      # upload artifact
-      - name: Upload artifact
+      # upload artifacts
+      - name: Publish Lib Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: build-${{ github.sha }}
+          name: Lib-${{ github.sha }}
           path: Lib
-          # name: ${{ matrix.configuration }}-${{ matrix.platform }}
-          # path: ${{ GITHUB_WORKSPACE }}\Lib\${{ matrix.platform }}\${{ matrix.configuration }}
-  post-build:
-    name: Post Build
-    runs-on: windows-latest
-    needs: build
-    steps:
-      # checkout code from repo
-      - name: Checkout
-        uses: actions/checkout@v1
-      # download artifact
-      - name: Download artifact
-        uses: actions/download-artifact@v1
+      - name: Publish Obj Artifact
+        uses: actions/upload-artifact@v1
         with:
-          name: build-${{ github.sha }}
-          path: Lib
+          name: Obj-${{ github.sha }}
+          path: Obj
       # Prepare distribution folder
       - name: Create Distribution
-        if: success()
-        run: Bin\make-dist.ps1
-        shell: pwsh
+        run: Bin\Build New-Distribution, Compress-Distribution
       # Publish Distribution Artifact
       - name: Publish Distribution Artifact
-        if: success()
         uses: actions/upload-artifact@v1
         with:
           name: EnVar-Plugin-${{ github.sha }}
-          path: Dist
+          path: Data
