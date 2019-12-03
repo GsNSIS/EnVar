@@ -22,11 +22,13 @@ stack (unless noted otherwise), see below for the codes.
 
 ### Error Codes
 
-ERR_SUCCESS     0   Function completed successfully.
-ERR_NOREAD      1   Function couldn't read from the environment.
-ERR_NOVARIABLE  2   Variable doesn't exist in the current environment.
-ERR_NOVALUE     3   Value doesn't exist in the Variable.
-ERR_NOWRITE     4   Function can't write to the current environment.
+| Constant       | Code | Description
+| -------------- | ----:| -----------------------------------------------------
+| ERR_SUCCESS    |    0 | Function completed successfully.
+| ERR_NOREAD     |    1 | Function couldn't read from the environment.
+| ERR_NOVARIABLE |    2 | Variable doesn't exist in the current environment.
+| ERR_NOVALUE    |    3 | Value doesn't exist in the Variable.
+| ERR_NOWRITE    |    4 | Function can't write to the current environment.
 
 ### EnVar::SetHKCU / EnVar::SetHKLM
 
