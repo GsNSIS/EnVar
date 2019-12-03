@@ -73,7 +73,7 @@ by EnVar::SetHKCU and EnVar::SetHKLM, and does not write to the registry.
 
 ## Examples
 
-For a example NSIS script visit [Examples/EnVar](https://github.com/GsNSIS/EnVar/blob/master/Examples/EnVar/example.nsi).
+For a example NSIS script visit [Docs/example.nsi](https://github.com/GsNSIS/EnVar/blob/master/Docs/example.nsi).
 
 ## Development
 
