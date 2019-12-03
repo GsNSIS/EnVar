@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v1
       # Install Modules
       - name: Setup Build Script
-        run: Install-Module "Invoke-MsBuild" -Force
+        run: Install-Module -Name Invoke-MsBuild -Force
       # use msbuild to build the solution
       - name: Build Plugin
         run: Bin\Build.ps1 New-Build

@@ -6,10 +6,31 @@
 Build script for EnVar Plugin for NSIS.
 
 .DESCRIPTION
-Brief description of script
+This script helps to build the plugin and it's distribution
 
 .PARAMETER Step
-Brief description of parameter input required. Repeat this attribute if required
+Optional. Defines one or more build steps to perform.
+
+Remove-Build
+  Remove the build folders Lib and Obj
+
+Update-Build
+  Compile the plugin
+
+New-Build
+  Execute Remove-Build and Update-Build
+
+Remove-Distribution
+  Remove Data\EnVar-Plugin.zip and the folder Dist
+
+Update-Distribution
+  Copy the files for the distribution to the folder Dist
+
+New-Distribution
+  Execute Remove-Distribution and Update-Distribution
+
+Compress-Distribution
+  Compress the folder Dist to Data\EnVar-Plugin.zip
 
 .INPUTS
 None.
@@ -17,29 +38,30 @@ None.
 .OUTPUTS
 None.
 
-.NOTES
-Version:        1.0
-Author:         Simon Gilli
-Creation Date:  28.11.2019
-Purpose/Change: Initial script development
-  
 .EXAMPLE
-            {"Build-Plugin" -match $_} {
-                $StepMatch = $true
-                Build-Plugin
-            }
-            {"Remove-Distribution" -match $_} {
-                $StepMatch = $true
-                Remove-Distribution
-            }
-            {"Initialize-Distribution" -match $_} {
-                $StepMatch = $true
-                Initialize-Distribution
-            }
-            {"Compress-Distribution" -match $_} {
-                $StepMatch = $true
-                Compress-Distribution
-            }
+Bin\Build
+
+Build the plugin and create the distribution.
+
+.EXAMPLE
+Bin\Build New-Build
+
+Clean the build folders and compile the plugin.
+
+.EXAMPLE
+Bin\Build Compress-Distribution
+
+Create EnVar-Plugin.zip from the Dist folder.
+
+.EXAMPLE
+Bin\Build Update-Build, New-Distribution, Compress-Distribution
+
+Compile the plugin, update the Dist folder and create EnVar-Plugin.zip from the 
+Dist folder.
+
+.LINK
+Project home: https://github.com/GsNSIS/EnVar
+
 #>
 
 Param(
@@ -69,6 +91,7 @@ function Update-Build
 {
     Write-Output "Update build..."
 
+    $BuildResults = @()
     $Configurations = "Release", "Release Unicode"
     $Platforms = "x86", "x64"
 
@@ -80,10 +103,12 @@ function Update-Build
 
             Write-Output "- Creating $Configuration for $Platform"
             Write-Output ""
-            Invoke-MsBuild "$PSScriptRoot\..\EnVar.sln" -MsBuildParameters "/p:Configuration=`"$Configuration`" /p:Platform=`"$Platform`""
+            $BuildResults += Invoke-MsBuild "$PSScriptRoot\..\EnVar.sln" -MsBuildParameters "/p:Configuration=`"$Configuration`" /p:Platform=`"$Platform`""
             Write-Output ""
         }
     }
+
+    return $BuildResults
 }
 
 function New-Build
@@ -95,6 +120,9 @@ function New-Build
 function Remove-Distribution
 {
     Write-Output "Cleanup distribution..."
+    if (Test-Path -Path "$PSScriptRoot\..\Data\EnVar-Plugin.zip") {
+        Remove-Item -Path "$PSScriptRoot\..\Data\EnVar-Plugin.zip" -Force
+    }
     if (Test-Path -Path "$PSScriptRoot\..\Dist") {
         Remove-Item -Path "$PSScriptRoot\..\Dist" -Force -Recurse
     }
@@ -105,12 +133,10 @@ function Update-Distribution
     Write-Output "Copy source files..."
     New-Item -ItemType "directory" -Path "$PSScriptRoot\..\Dist\Contrib\EnVar" -Force | Out-Null
     Copy-Item -Path "$PSScriptRoot\..\Src", "$PSScriptRoot\..\EnVar.*" -Destination "$PSScriptRoot\..\Dist\Contrib\EnVar\" -Force -Recurse
-    #Copy-Item "$PSScriptRoot\..\EnVar.*" -Destination "$PSScriptRoot\..\Dist\Contrib\EnVar\" -Force
     
     Write-Output "Copy doc files..."
     New-Item -ItemType "directory" "$PSScriptRoot\..\Dist\Docs\EnVar" -Force | Out-Null
     Copy-Item -Path "$PSScriptRoot\..\LICENSE", "$PSScriptRoot\..\README.md" -Destination "$PSScriptRoot\..\Dist\Docs\EnVar\" -Force
-    #Copy-Item "$PSScriptRoot\..\README.md" -Destination "$PSScriptRoot\..\Dist\Docs\EnVar\" -Force
     
     Write-Output "Copy example files..."
     New-Item -ItemType "directory" "$PSScriptRoot\..\Dist\Examples\EnVar" -Force | Out-Null

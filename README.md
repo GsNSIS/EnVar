@@ -72,6 +72,32 @@ EnVar::Update        RegRoot VariableName
 
 For a example NSIS script visit [Examples/EnVar](https://github.com/GsNSIS/EnVar/blob/master/Examples/EnVar/example.nsi).
 
+## Development
+
+### System Requirements
+
+* Visual Studio 2015 or higher
+* PowerShell 3.0 or higher (to run the build script)
+* PowerShell Module [Invoke-MsBuild](https://github.com/deadlydog/Invoke-MsBuild#readme)
+  (to run the build script)
+
+#### Install Module Invoke-MsBuild
+
+Run the following command in your PowerShell:
+
+```pwsh
+Install-Module -Name Invoke-MsBuild -Force
+```
+
+### Build and deploy
+
+All build and deploy actions are implemented in a PowerShell
+[build script](https://github.com/GsNSIS/EnVar/tree/master/Bin/Build.ps1).
+
+Run `help Bin\Build` to get a detailed description of the available steps.
+
+For a normal build and deploy run simply call the script without any parameters.
+
 ## License
 
 This project is released under the terms of the [zlib License](LICENSE)
