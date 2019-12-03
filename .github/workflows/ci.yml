@@ -1,0 +1,58 @@
+name: Build NSIS Plugin Dll's and Artifacts
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+    - '*.sln'
+    - '*.vcproj'
+    - '*.vcxproj'
+    - 'Src/**.c'
+    - 'Src/**.h'
+    - 'Src/**.lib'
+  push:
+    paths:
+    - '*.sln'
+    - '*.vcproj'
+    - '*.vcxproj'
+    - 'Src/**.c'
+    - 'Src/**.h'
+    - 'Src/**.lib'
+jobs:
+  build:
+    name: Build Dll's
+    runs-on: windows-latest
+    steps:
+      # checkout code from repo
+      - name: Checkout
+        uses: actions/checkout@v1
+      # Install Modules
+      - name: Setup Build Script
+        run: Install-Module -Name Invoke-MsBuild -Force
+      # use msbuild to build the solution
+      - name: Build Plugin
+        run: Bin\Build.ps1 New-Build
+      # upload artifacts
+      - name: Publish Lib Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Lib-${{ github.sha }}
+          path: Lib
+      - name: Publish Obj Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Obj-${{ github.sha }}
+          path: Obj
+      # Prepare distribution folder
+      - name: Create Distribution
+        run: Bin\Build.ps1 New-Distribution, Compress-Distribution
+      # Publish Distribution Artifact
+      - name: Publish Dist Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Dist-${{ github.sha }}
+          path: Dist
+      - name: Publish Data Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Data-${{ github.sha }}
+          path: Data
