@@ -66,18 +66,18 @@ int StrLen(PTCHAR hVar)
 }
 
 /* Reallocs a buffer. It's more efficient to free and alloc than realloc. */ 
-BOOL StrReAlloc(PTCHAR hVar, int strlen)
+BOOL StrReAlloc(PTCHAR* phVar, int strlen)
 {
   int i;
   PTCHAR temp;
 
-  if (GlobalSize(hVar) >= strlen*sizeof(TCHAR)) return 1;
+  if (GlobalSize(*phVar) >= strlen*sizeof(TCHAR)) return 1;
   temp = StrAlloc(strlen);
   if (!temp) return 0;
-  for (i = 0; i < StrSize(hVar); i++)
-    temp[i] = hVar[i];
-  StrFree(hVar);
-  hVar = temp;
+  for (i = 0; i < StrSize(*phVar); i++)
+    temp[i] = (*phVar)[i];
+  StrFree(*phVar);
+  *phVar = temp;
 
   return 1;
 }
@@ -117,18 +117,18 @@ void Initialize(extra_parameters* xp)
 
 /* Appends a semi-colon to a string. Auto-expands the buffer
    if there isn't enough room. */
-BOOL AppendSemiColon(PTCHAR bufStr)
+BOOL AppendSemiColon(PTCHAR* pbufStr)
 {
   int len;
-  
-  if (!bufStr) return FALSE;
-  len = StrLen(bufStr);
+
+  if (!pbufStr && !*pbufStr) return FALSE;
+  len = StrLen(*pbufStr);
   if (!len) return TRUE;
-  if (bufStr[len-1] != ';' && bufStr[0] != ';')
+  if ((*pbufStr)[len-1] != ';' && (*pbufStr)[0] != ';')
   {
-    if (!StrReAlloc(bufStr, len+APPEND_SIZE)) return FALSE;
-    bufStr[len] = ';';
-    bufStr[len+1] = 0;
+    if (!StrReAlloc(pbufStr, len+APPEND_SIZE)) return FALSE;
+    (*pbufStr)[len] = ';';
+    (*pbufStr)[len+1] = 0;
   }
   return TRUE;
 }
@@ -170,12 +170,12 @@ ULONG CreateRegKey(void)
 }
 
 /* Custom ReadRegVar function with ERROR_MORE_DATA handling. */
-ULONG ReadRegVar(PTCHAR ptName, PDWORD pdwType, PTCHAR ptDest, PDWORD pdwStrLen)
+ULONG ReadRegVar(PTCHAR ptName, PDWORD pdwType, PTCHAR* pptDest, PDWORD pdwStrLen)
 {
   DWORD dwRet, dwSize = *pdwStrLen*sizeof(TCHAR), dwType = *pdwType;
   HKEY hKey;
 
-  ptDest[0] = 0;
+  (*pptDest)[0] = 0;
   if (bRegKeyHKLM)
     dwRet = RegOpenKeyEx(HKLM, HKLM_STR, 0, KEY_READ, &hKey);
   else
@@ -183,19 +183,19 @@ ULONG ReadRegVar(PTCHAR ptName, PDWORD pdwType, PTCHAR ptDest, PDWORD pdwStrLen)
 
   if (dwRet == ERROR_SUCCESS)
   {
-    dwRet = RegQueryValueEx(hKey, ptName, 0, &dwType, (LPBYTE)ptDest, &dwSize);
+    dwRet = RegQueryValueEx(hKey, ptName, 0, &dwType, (LPBYTE)*pptDest, &dwSize);
     while (dwRet == ERROR_MORE_DATA)
     {
       DWORD dwSizeTemp = dwSize + APPEND_SIZE + IS_UNICODE_AND_ODD(dwSize);
 
-      if (!StrReAlloc(ptDest, dwSizeTemp/sizeof(TCHAR))) return 4; /* ERR_NOWRITE */
-      dwRet = RegQueryValueEx(hKey, ptName, 0, &dwType, (LPBYTE)ptDest, &dwSizeTemp);
+      if (!StrReAlloc(pptDest, dwSizeTemp/sizeof(TCHAR))) return 4; /* ERR_NOWRITE */
+      dwRet = RegQueryValueEx(hKey, ptName, 0, &dwType, (LPBYTE)*pptDest, &dwSizeTemp);
       if (dwRet == ERROR_SUCCESS) dwSize = dwSizeTemp;
     }
     RegCloseKey(hKey);
     if (dwRet == ERROR_SUCCESS && (dwType == REG_SZ || dwType == REG_EXPAND_SZ))
     {
-      ptDest[((dwSize+IS_UNICODE_AND_ODD(dwSize))/sizeof(TCHAR))-1] = 0;
+      (*pptDest)[((dwSize+IS_UNICODE_AND_ODD(dwSize))/sizeof(TCHAR))-1] = 0;
       *pdwType = dwType;
       *pdwStrLen = (dwSize-IS_UNICODE_AND_ODD(dwSize))/sizeof(TCHAR);
 
@@ -203,7 +203,7 @@ ULONG ReadRegVar(PTCHAR ptName, PDWORD pdwType, PTCHAR ptDest, PDWORD pdwStrLen)
     }
     else
     {
-      ptDest[0] = 0;
+      (*pptDest)[0] = 0;
       /* dwRet can still be ERROR_SUCCESS here, so return an absolute value. */
       return 1; /* ERR_NOREAD */
     }
@@ -233,14 +233,14 @@ ULONG WriteRegVar(PTCHAR ptName, DWORD dwKeyType, PTCHAR ptData, DWORD dwStrLen)
 /* Checks for write access and various conditions about a variable and it's type. */
 LPCTSTR CheckVar(void)
 {
-  DWORD dwStrSize, dwKeyType;
+  DWORD dwStrSize, dwKeyType = REG_EXPAND_SZ;
   HKEY hKeyHandle;
 
   SecureZeroMemory(gptBuffer, GlobalSize(gptBuffer));
 
   popstring(gptVarName);
   popstring(gptPathString);
-  
+
   if (!StrLen(gptVarName)) return ERR_NOVARIABLE;
   if (lstrcmpi(gptVarName, _T("NULL")) == 0)
   {
@@ -260,14 +260,14 @@ LPCTSTR CheckVar(void)
       return ERR_NOWRITE;
   }
   dwStrSize = StrSize(gptBuffer);
-  if (ReadRegVar(gptVarName, &dwKeyType, gptBuffer, &dwStrSize) != ERROR_SUCCESS)
+  if (ReadRegVar(gptVarName, &dwKeyType, &gptBuffer, &dwStrSize) != ERROR_SUCCESS)
     return ERR_NOVARIABLE;
 
   if (!StrLen(gptPathString)) return ERR_NOVARIABLE;
   if (lstrcmpi(gptPathString, _T("NULL")) != 0)
   {
-    if (!AppendSemiColon(gptPathString)) return ERR_NOWRITE;
-    if (!AppendSemiColon(gptBuffer)) return ERR_NOWRITE;
+    if (!AppendSemiColon(&gptPathString)) return ERR_NOWRITE;
+    if (!AppendSemiColon(&gptBuffer)) return ERR_NOWRITE;
     if (StrStrI(gptBuffer, gptPathString) == NULL)
       return ERR_NOVALUE;
     else
@@ -299,18 +299,18 @@ LPCTSTR AddVarValue(DWORD dwKey)
     DWORD dwKeyType;
 
     dwStrSize = StrSize(gptBuffer);
-    ReadRegVar(gptVarName, &dwKeyType, gptBuffer, &dwStrSize);
+    ReadRegVar(gptVarName, &dwKeyType, &gptBuffer, &dwStrSize);
 
     if (dwKeyType == REG_EXPAND_SZ) dwKey = dwKeyType;
-    if (!AppendSemiColon(gptPathString)) return ERR_NOWRITE;
-    if (!AppendSemiColon(gptBuffer)) return ERR_NOWRITE;
+    if (!AppendSemiColon(&gptPathString)) return ERR_NOWRITE;
+    if (!AppendSemiColon(&gptBuffer)) return ERR_NOWRITE;
 
     if (StrStrI(gptBuffer, gptPathString) == NULL)
     {
       int i, len = StrLen(gptBuffer);
 
       /* Add one for separator and one for terminating NULL character. */
-      if (!StrReAlloc(gptBuffer, len+StrLen(gptPathString)+APPEND_SIZE))
+      if (!StrReAlloc(&gptBuffer, len+StrLen(gptPathString)+APPEND_SIZE))
         return ERR_NOWRITE;
 
       for (i = 0; i <= StrLen(gptPathString); i++)
@@ -338,11 +338,11 @@ LPCTSTR DeleteVarValue(void)
   popstring(gptPathString);
 
   dwStrSize = StrSize(gptBuffer);
-  if (ReadRegVar(gptVarName, &dwKeyType, gptBuffer, &dwStrSize) != ERROR_SUCCESS)
+  if (ReadRegVar(gptVarName, &dwKeyType, &gptBuffer, &dwStrSize) != ERROR_SUCCESS)
     return ERR_NOVARIABLE;
 
-  if (!AppendSemiColon(gptPathString)) return ERR_NOWRITE;
-  if (!AppendSemiColon(gptBuffer)) return ERR_NOWRITE;
+  if (!AppendSemiColon(&gptPathString)) return ERR_NOWRITE;
+  if (!AppendSemiColon(&gptBuffer)) return ERR_NOWRITE;
 
   if (StrStrI(gptBuffer, gptPathString) == NULL)
     return ERR_NOVALUE;
@@ -403,22 +403,22 @@ LPCTSTR DeleteVar(void)
 /* Updates the installer environment from the registry. */
 LPCTSTR UpdateVar(void)
 {
-  PTCHAR ptRegRoot = gptVarName, ptVarName = gptPathString;
+  PTCHAR* pptRegRoot = &gptVarName, ptVarName = gptPathString;
   DWORD dwRet, dwStrSize, dwKeyType;
   BOOL bOldKey = GetRegKey();
   int i;
 
-  popstring(ptRegRoot);
+  popstring(*pptRegRoot);
   popstring(ptVarName);
 
-  if (!lstrcmpi(ptRegRoot, _T("HKCU")) || !lstrcmpi(ptRegRoot, _T("HKLM")))
+  if (!lstrcmpi(*pptRegRoot, _T("HKCU")) || !lstrcmpi(*pptRegRoot, _T("HKLM")))
   {
-    if (!lstrcmpi(ptRegRoot, _T("HKLM")))
+    if (!lstrcmpi(*pptRegRoot, _T("HKLM")))
       SetRegKey(TRUE);
     else
       SetRegKey(FALSE);
 
-    dwRet = ReadRegVar(ptVarName, &dwKeyType, gptBuffer, &dwStrSize);
+    dwRet = ReadRegVar(ptVarName, &dwKeyType, &gptBuffer, &dwStrSize);
     SetRegKey(bOldKey);
     if (dwRet != ERROR_SUCCESS)
       return ERR_NOVARIABLE;
@@ -428,40 +428,38 @@ LPCTSTR UpdateVar(void)
     int len;
 
     SetRegKey(FALSE);
-    dwRet = ReadRegVar(ptVarName, &dwKeyType, gptBuffer, &dwStrSize);
+    dwRet = ReadRegVar(ptVarName, &dwKeyType, &gptBuffer, &dwStrSize);
     if (dwRet != ERROR_SUCCESS)
-      *ptRegRoot = 0;
+      **pptRegRoot = 0;
     else
     {
-      if (!StrReAlloc(ptRegRoot, StrLen(gptBuffer)+APPEND_SIZE))
+      if (!StrReAlloc(pptRegRoot, StrLen(gptBuffer)+APPEND_SIZE))
       {
         SetRegKey(bOldKey);
         return ERR_NOWRITE;
       }
-      /* Update global pointer if ptRegRoot was changed. */
-      gptVarName = (gptVarName != ptRegRoot) ? ptRegRoot : gptVarName;
       for (i = 0; i <= StrLen(gptBuffer); i++)
-        ptRegRoot[i] = gptBuffer[i];
-      AppendSemiColon(ptRegRoot);
+        (*pptRegRoot)[i] = gptBuffer[i];
+      AppendSemiColon(pptRegRoot);
     }
     SetRegKey(TRUE);
-    dwRet = ReadRegVar(ptVarName, &dwKeyType, gptBuffer, &dwStrSize);
+    dwRet = ReadRegVar(ptVarName, &dwKeyType, &gptBuffer, &dwStrSize);
     SetRegKey(bOldKey);
     if (dwRet != ERROR_SUCCESS)
-      if (!(*ptRegRoot))
+      if (!(**pptRegRoot))
         return ERR_NOVARIABLE;
       else
         *gptBuffer = 0;
 
-    AppendSemiColon(gptBuffer);
+    AppendSemiColon(&gptBuffer);
     len = StrLen(gptBuffer);
 
     /* Add one for separator and one for terminating NULL character. */
-    if (!StrReAlloc(gptBuffer, len+StrLen(ptRegRoot)+APPEND_SIZE))
+    if (!StrReAlloc(&gptBuffer, len+StrLen(*pptRegRoot)+APPEND_SIZE))
       return ERR_NOWRITE;
 
-    for (i = 0; i <= StrLen(ptRegRoot); i++)
-      gptBuffer[len+i] = ptRegRoot[i];
+    for (i = 0; i <= StrLen(*pptRegRoot); i++)
+      gptBuffer[len+i] = (*pptRegRoot)[i];
 
     RemoveSemiColon(gptBuffer);
   }
