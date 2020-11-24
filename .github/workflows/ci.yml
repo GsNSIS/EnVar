@@ -3,20 +3,29 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
     paths:
-    - '*.sln'
-    - '*.vcproj'
-    - '*.vcxproj'
-    - 'Src/**.c'
-    - 'Src/**.h'
-    - 'Src/**.lib'
+      - '*.sln'
+      - '*.vcproj'
+      - '*.vcxproj'
+      - 'Bin/Build.ps1'
+      - 'Src/**.c'
+      - 'Src/**.h'
+      - 'Src/**.lib'
+      - 'Tests/plugin_test.nsi'
   push:
+    branches:    
+      - main
+      - master # remove onces migrated to main
+    tags:        
+      - v*
     paths:
-    - '*.sln'
-    - '*.vcproj'
-    - '*.vcxproj'
-    - 'Src/**.c'
-    - 'Src/**.h'
-    - 'Src/**.lib'
+      - '*.sln'
+      - '*.vcproj'
+      - '*.vcxproj'
+      - 'Bin/Build.ps1'
+      - 'Src/**.c'
+      - 'Src/**.h'
+      - 'Src/**.lib'
+      - 'Tests/plugin_test.nsi'
 jobs:
   build:
     name: Build Dll's
@@ -56,3 +65,25 @@ jobs:
         with:
           name: Data-${{ github.sha }}
           path: Data
+      # Deploy plugin
+      - name: Deploy plugin
+        run: Bin\Build.ps1 Deploy-Plugin
+      # Build PluginTest
+      - name: Build PluginTest
+        run: Bin\Build.ps1 Build-PluginTest
+      # Publish PluginTest Artifact
+      - name: Publish PluginTest Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: PluginTest-${{ github.sha }}
+          path: Tests\PluginTest.exe
+      # Test Plugin
+      - name: Test Plugin
+        run: Bin\Build.ps1 Start-PluginTest
+      # Publish PluginTest Log Artifact
+      - name: Publish PluginTest Log Artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v1
+        with:
+          name: PluginTest-Log-${{ github.sha }}
+          path: Tests\PluginTest.log
