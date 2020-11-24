@@ -28,6 +28,7 @@ bld/
 [Ll]ib/
 [Ll]og/
 [Dd]ist/
+[Tt]ests/PluginTest.exe
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
